@@ -1,0 +1,551 @@
+---
+title: "cytospace_downstream"
+author: "Susanna Avagyan"
+date: "2024-03-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Loading libraries
+```{r}
+library(Seurat)
+library(SeuratData)
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+```
+Loading spatial datasets
+```{r}
+s1_cec_both_met_r1 <- Load10X_Spatial("spatial/SN123_A551763_Rep1/")
+s1_cec_both_met_r2 <- Load10X_Spatial("spatial/SN124_A551763_Rep2/")
+
+s2_rcol_both_met_r1 <- Load10X_Spatial("spatial/SN123_A595688_Rep1/")
+s2_rcol_both_met_r2 <- Load10X_Spatial("spatial/SN124_A595688_Rep2/")
+
+s3_rcol_lymph_met_r1 <- Load10X_Spatial("spatial/SN048_A416371_Rep1/")
+s3_rcol_lymph_met_r2 <- Load10X_Spatial("spatial/SN048_A416371_Rep2/")
+
+s4_scol_lymph_met_r1 <- Load10X_Spatial("spatial/SN84_A120838_Rep1/")
+s4_scol_lymph_met_r2 <- Load10X_Spatial("spatial/SN84_A120838_Rep2/")
+
+s5_rec_both_met_r1 <- Load10X_Spatial("spatial/SN048_A121573_Rep1/")
+s5_rec_both_met_r2 <- Load10X_Spatial("spatial/SN048_A121573_Rep2/")
+
+s6_rec_no_met_r1 <- Load10X_Spatial("spatial/SN123_A938797_Rep1_X/")
+s6_rec_no_met_r2 <- Load10X_Spatial("spatial/SN124_A938797_Rep2/")
+
+s7_rec_healthy_r1 <- Load10X_Spatial("spatial/SN123_A798015_Rep1/")
+s7_rec_healthy_r2 <- Load10X_Spatial("spatial/SN124_A798015_Rep2/")
+
+```
+
+The data is already filtered but do QC to validate.
+
+```{r}
+# For s1_cec_both_met_r1 and s1_cec_both_met_r2
+plot1 <- VlnPlot(s1_cec_both_met_r1, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s1_cec_both_met_r1, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+plot1 <- VlnPlot(s1_cec_both_met_r2, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s1_cec_both_met_r2, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+# For s2_rcol_both_met_r1 and s2_rcol_both_met_r2
+plot1 <- VlnPlot(s2_rcol_both_met_r1, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s2_rcol_both_met_r1, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+plot1 <- VlnPlot(s2_rcol_both_met_r2, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s2_rcol_both_met_r2, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+# For s3_rcol_lymph_met_r1 and s3_rcol_lymph_met_r2
+plot1 <- VlnPlot(s3_rcol_lymph_met_r1, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s3_rcol_lymph_met_r1, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+plot1 <- VlnPlot(s3_rcol_lymph_met_r2, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s3_rcol_lymph_met_r2, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+# For s4_scol_lymph_met_r1 and s4_scol_lymph_met_r2
+plot1 <- VlnPlot(s4_scol_lymph_met_r1, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s4_scol_lymph_met_r1, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+plot1 <- VlnPlot(s4_scol_lymph_met_r2, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s4_scol_lymph_met_r2, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+# For s5_rec_both_met_r1 and s5_rec_both_met_r2
+plot1 <- VlnPlot(s5_rec_both_met_r1, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s5_rec_both_met_r1, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+plot1 <- VlnPlot(s5_rec_both_met_r2, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s5_rec_both_met_r2, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+# For s6_rec_no_met_r1 and s6_rec_no_met_r2
+plot1 <- VlnPlot(s6_rec_no_met_r1, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s6_rec_no_met_r1, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+plot1 <- VlnPlot(s6_rec_no_met_r2, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s6_rec_no_met_r2, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+# For s7_rec_healthy_r1 and s7_rec_healthy_r2
+plot1 <- VlnPlot(s7_rec_healthy_r1, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s7_rec_healthy_r1, features = "nCount_Spatial") + theme(legend.position = "right")
+wrap_plots(plot1, plot2)
+
+plot1 <- VlnPlot(s7_rec_healthy_r2, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+plot2 <- SpatialFeaturePlot(s7_rec_healthy_r2, features = "nCount_Spatial")
+wrap_plots(plot1, plot2)
+
+```
+Process and combine technical replicates. 
+NOTE: Do not use S1 Replicate 2 because of low gene counts (poor quality)
+
+```{r}
+s1_cec_both_met_r1 <- SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+s1_cec_both_met <- copy(s1_cec_both_met_r1) 
+
+s2_rcol_both_met_r1 <-  SCTransform(s2_rcol_both_met_r1, assay = "Spatial", verbose = FALSE)
+s2_rcol_both_met_r2 <-  SCTransform(s2_rcol_both_met_r2, assay = "Spatial", verbose = FALSE)
+s2_rcol_both_met <- merge(s2_rcol_both_met_r1, s2_rcol_both_met_r2)
+
+s3_rcol_lymph_met_r1 <- SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+s3_rcol_lymph_met_r2 <-  SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+
+s4_scol_lymph_met_r1 <- SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+s4_scol_lymph_met_r2 <-  SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+
+s5_rec_both_met_r1 <- SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+s5_rec_both_met_r2 <- SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+
+s6_rec_no_met_r1 <- SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+s6_rec_no_met_r2 <- SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+
+s7_rec_healthy_r1 <-  SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+s7_rec_healthy_r2 <-  SCTransform(s1_cec_both_met_r1, assay = "Spatial", verbose = FALSE)
+```
+
+Load pathology annotations for spots
+```{r}
+pathology_annotation <- read_csv("pathology_annotations_combined_grouped.csv")
+pathology_annotation
+
+
+```
+
+Loading CytoSPACE assigned cell type fractions.
+
+Estimated cell proportions 
+```{r}
+# Load necessary libraries
+library(tidyverse)
+
+# Define the path to the main directory
+main_dir <- "cytospace_results"
+
+# Get the list of subfolders within the main directory
+subfolders <- list.dirs(main_dir, full.names = TRUE, recursive = FALSE)
+
+# Initialize an empty list to store dataframes
+df_list <- list()
+
+# Loop through each subfolder, read the CSV, add a column, and store the dataframe
+for(subfolder in subfolders) {
+  # Define the path to the CSV file within the subfolder
+  csv_path <- file.path(subfolder, "fractional_abundances_by_spot.csv")
+  
+  # Check if the file exists
+  if(file.exists(csv_path)) {
+    # Read the CSV file
+    df <- read.csv(csv_path)
+    
+    # Extract the subfolder name from the path
+    sample_name <- basename(subfolder)
+    
+    # Add a column with the subfolder name
+    df$sample_name <- sample_name
+    
+    # Add the dataframe to the list
+    df_list[[length(df_list) + 1]] <- df
+  }
+}
+
+# Combine all dataframes into a final dataframe
+final_df <- bind_rows(df_list) 
+final_df[is.na(final_df)] <- 0
+```
+
+```{r}
+new_names <- c("S5_Rec_both_r1",
+               "S5_Rec_both_r2",
+               "S3_Col_R_lymph_r1",
+               "S3_Col_R_lymph_r2",
+               "S1_Cec_both_r1",
+               "S2_Col_R_both_r1",
+               "S7_Rec/Sig_nn_r1",
+               "S6_Rec_none_r1",
+               "S1_Cec_both_r2",
+               "S2_Col_R_both_r2",
+               "S7_Rec/Sig_nn_r2",
+               "S6_Rec_none_r2",
+               "S4_Col_Sig_lymph_r1" ,
+               "S4_Col_Sig_lymph_r2")
+sample_dict <- setNames(new_names, unique(final_df$sample_name))
+```
+
+Assessing assigment quality based on consistency between technical replicates.
+Assessing differences in cell type fractions between samples and aggregated metastatic groups.
+
+```{r}
+final_df$standardized_sample <- sample_dict[final_df$sample_name]
+final_df <- final_df %>%
+  mutate(metastasis = str_extract(standardized_sample, "both|nn|none|lymph"))
+
+# Assuming 'final_df' is your dataframe
+# First, we need to transform the dataframe from wide format to long format
+long_df <- final_df %>%
+  gather(key = "CellType", value = "Fraction", -standardized_sample, -SpotID, -metastasis, -sample_name)
+
+
+# For each sample
+# Aggregate cell type fractions by sample
+aggregated_df <- long_df %>%
+  group_by(standardized_sample, metastasis, CellType) %>%
+  summarise(TotalFraction = sum(Fraction), .groups = 'drop')
+
+# To scale the fractions so they sum to 1 for each sample
+scaled_df <- aggregated_df %>%
+  group_by(standardized_sample,  metastasis) %>%
+  mutate(ScaledFraction = TotalFraction / sum(TotalFraction)) %>%
+  ungroup()
+
+# Plotting the scaled fractions as a stacked bar plot
+ggplot(scaled_df, aes(x = standardized_sample, y = ScaledFraction, fill = CellType)) +
+  geom_bar(stat = "identity" ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Scaled Fraction", x = "Sample Name", fill = "Cell Type") +
+  ggtitle("Aggregated Cell Type Fractions per Sample") +
+  theme_minimal() +
+        scale_fill_brewer(palette = "Accent") +
+  coord_flip()
+
+# For each group (aggregated and rescaled)
+scaled_df2 <- aggregated_df %>%
+  group_by(metastasis) %>%
+  mutate(ScaledFraction = TotalFraction / sum(TotalFraction)) %>%
+  ungroup()
+
+
+ggplot(scaled_df2, aes(x = metastasis, y = ScaledFraction, fill = CellType)) +
+  geom_bar(stat = "identity" ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Scaled Fraction", x = "Metastasis", fill = "Cell Type") +
+  ggtitle("Aggregated Cell Type Fractions per Metastasis Type") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Accent") +
+  coord_flip()
+
+
+
+```
+```{r}
+library(ggpubr)
+final_df_filtered <- scaled_df[scaled_df$metastasis != "nn",]
+final_df_filtered$metastasis <- factor(final_df_filtered$metastasis)
+comparisons <- list(c("both", "lymph"), c("both", "none"), c("lymph", "none"))
+
+
+for (ct in unique(final_df_filtered$CellType)) {
+# 1. Visualize the data
+p <- ggplot(final_df_filtered[final_df_filtered$CellType == ct,], aes(x = metastasis, y = ScaledFraction)) +
+      geom_boxplot(aes(fill = metastasis)) +
+      stat_compare_means(comparisons = comparisons, 
+                     # label = "p.signif",
+                     method = "wilcox.test") +
+      scale_fill_brewer(palette = "Accent") +
+      theme_minimal() +
+      labs(title = paste(str_replace_all(ct,"\\.", " "), "fractions across groups"),
+              y = "Cell Type Fraction", x = "Group")
+
+
+# Print the plot
+print(p)
+
+}
+```
+
+For only tumor region.
+```{r}
+final_df_tumor <- merge(final_df, pathology_annotation[c("SpotID","region")], by = "SpotID") %>% filter(region == "tumor") %>%
+  select(-region) %>%
+  distinct()
+  
+
+# Assuming 'final_df' is your dataframe
+# First, we need to transform the dataframe from wide format to long format
+long_df_tumor <- final_df_tumor %>%
+  gather(key = "CellType", value = "Fraction", -standardized_sample, -SpotID, -metastasis, -sample_name)
+
+
+# sample-wise
+# Aggregate cell type fractions by sample
+aggregated_df_tumor <- long_df_tumor %>%
+  group_by(standardized_sample, metastasis, CellType) %>%
+  summarise(TotalFraction = sum(Fraction), .groups = 'drop')
+
+
+# To scale the fractions so they sum to 1 for each sample
+scaled_df_tumor <- aggregated_df_tumor %>%
+  group_by(standardized_sample,  metastasis) %>%
+  mutate(ScaledFraction = TotalFraction / sum(TotalFraction)) %>%
+  ungroup()
+
+# Plotting the scaled fractions as a stacked bar plot
+ggplot(scaled_df_tumor, aes(x = standardized_sample, y = ScaledFraction, fill = CellType)) +
+  geom_bar(stat = "identity" ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Scaled Fraction", x = "Sample Name", fill = "Cell Type") +
+  ggtitle("Aggregated Cell Type Fractions per Sample") +
+  theme_minimal() +
+  coord_flip()
+
+# group wise
+scaled_df2_tumor <- aggregated_df_tumor %>%
+  group_by(metastasis) %>%
+  mutate(ScaledFraction = TotalFraction / sum(TotalFraction)) %>%
+  ungroup()
+
+# Plotting the scaled fractions as a stacked bar plot
+ggplot(scaled_df2_tumor, aes(x = metastasis, y = ScaledFraction, fill = CellType))+
+  geom_bar(stat = "identity" ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Scaled Fraction", x = "Metastasis", fill = "Cell Type") +
+  ggtitle("Aggregated Cell Type Fractions per Metastasis Type") +
+  theme_minimal() +
+  coord_flip()
+
+
+
+```
+
+Load CytoSPACE assigned single cell expression.
+Combine technical replicates by simple merging (same scRNA seq dataset, no need for integration).
+Add label for metastatic group (Lymph/Liver vs Lymph)
+```{r}
+# s1
+s1_cec_both_met_r1_sc <- Read10X("cytospace_results/SN123_A551763_Rep1/assigned_expression/")
+s1_cec_both_met_r1_loc <- read_csv("cytospace_results/SN123_A551763_Rep1/assigned_locations.csv")
+s1_cec_both_met_r1_pthg <- pathology_annotation[grepl("SN123_A551763_Rep1", pathology_annotation$spot_id), ]
+
+s1_cec_both_met_r1_metadata <- merge(s1_cec_both_met_r1_loc, s1_cec_both_met_r1_pthg, by = "SpotID" )
+rownames(s1_cec_both_met_r1_metadata) <- s1_cec_both_met_r1_metadata$UniqueCID
+s1_cec_both_met_r1_sc <- CreateSeuratObject(s1_cec_both_met_r1_sc, meta.data = s1_cec_both_met_r1_metadata)
+Idents(s1_cec_both_met_r1_sc) <- "Lymph/Liver"
+
+
+# s2 both reps
+s2_rcol_both_met_r1_sc <- Read10X("cytospace_results/SN123_A595688_Rep1/assigned_expression/")
+s2_rcol_both_met_r1_loc <- read_csv("cytospace_results/SN123_A595688_Rep1/assigned_locations.csv")
+s2_rcol_both_met_r1_pthg <- pathology_annotation[grepl("SN123_A595688_Rep1", pathology_annotation$spot_id), ]
+s2_rcol_both_met_r1_metadata <- merge(s2_rcol_both_met_r1_loc, s2_rcol_both_met_r1_pthg, by = "SpotID" )
+rownames(s2_rcol_both_met_r1_metadata) <- s2_rcol_both_met_r1_metadata$UniqueCID
+s2_rcol_both_met_r1_sc <- CreateSeuratObject(s2_rcol_both_met_r1_sc, meta.data = s2_rcol_both_met_r1_metadata)
+Idents(s2_rcol_both_met_r1_sc) <- "Lymph/Liver"
+
+
+s2_rcol_both_met_r2_sc <- Read10X("cytospace_results/SN124_A595688_Rep2/assigned_expression/")
+s2_rcol_both_met_r2_loc <- read_csv("cytospace_results/SN124_A595688_Rep2/assigned_locations.csv")
+s2_rcol_both_met_r2_pthg <- pathology_annotation[grepl("SN124_A595688_Rep2", pathology_annotation$spot_id), ]
+s2_rcol_both_met_r2_metadata <- merge(s2_rcol_both_met_r2_loc, s2_rcol_both_met_r2_pthg, by = "SpotID" )
+rownames(s2_rcol_both_met_r2_metadata) <- s2_rcol_both_met_r2_metadata$UniqueCID
+s2_rcol_both_met_r2_sc <- CreateSeuratObject(s2_rcol_both_met_r2_sc, meta.data = s2_rcol_both_met_r2_metadata)
+Idents(s2_rcol_both_met_r2_sc) <- "Lymph/Liver"
+
+s2_rcol_both_met_sc <- merge(s2_rcol_both_met_r1_sc, s2_rcol_both_met_r2_sc)
+ 
+
+# s5
+s5_rec_both_met_r1_sc <- Read10X("cytospace_results/SN048_A121573_Rep1/assigned_expression/")
+s5_rec_both_met_r1_loc <- read_csv("cytospace_results/SN048_A121573_Rep1/assigned_locations.csv")
+s5_rec_both_met_r1_pthg <- pathology_annotation[grepl("SN048_A121573_Rep1", pathology_annotation$spot_id), ]
+s5_rec_both_met_r1_metadata <- merge(s5_rec_both_met_r1_loc, s5_rec_both_met_r1_pthg, by = "SpotID" )
+rownames(s5_rec_both_met_r1_metadata) <- s5_rec_both_met_r1_metadata$UniqueCID
+s5_rec_both_met_r1_sc <- CreateSeuratObject(s5_rec_both_met_r1_sc, meta.data = s5_rec_both_met_r1_metadata)
+Idents(s5_rec_both_met_r1_sc) <- "Lymph/Liver"
+
+
+s5_rec_both_met_r2_sc <- Read10X("cytospace_results/SN048_A121573_Rep2/assigned_expression/")
+s5_rec_both_met_r2_loc <- read_csv("cytospace_results/SN048_A121573_Rep2/assigned_locations.csv")
+s5_rec_both_met_r2_pthg <- pathology_annotation[grepl("SN048_A121573_Rep2", pathology_annotation$spot_id), ]
+s5_rec_both_met_r2_metadata <- merge(s5_rec_both_met_r2_loc, s5_rec_both_met_r2_pthg, by = "SpotID" )
+rownames(s5_rec_both_met_r2_metadata) <- s5_rec_both_met_r2_metadata$UniqueCID
+s5_rec_both_met_r2_sc <- CreateSeuratObject(s5_rec_both_met_r2_sc, meta.data = s5_rec_both_met_r2_metadata)
+Idents(s5_rec_both_met_r2_sc) <- "Lymph/Liver"
+
+s5_rec_both_met_sc <- merge(s5_rec_both_met_r1_sc, s5_rec_both_met_r2_sc)
+ 
+
+
+# s3
+s3_rcol_lymph_met_r1_sc <- Read10X("cytospace_results/SN048_A416371_Rep1/assigned_expression/")
+s3_rcol_lymph_met_r1_loc <- read_csv("cytospace_results/SN048_A416371_Rep1/assigned_locations.csv")
+s3_rcol_lymph_met_r1_pthg <- pathology_annotation[grepl("SN048_A416371_Rep1", pathology_annotation$spot_id), ]
+s3_rcol_lymph_met_r1_metadata <- merge(s3_rcol_lymph_met_r1_loc, s3_rcol_lymph_met_r1_pthg, by = "SpotID" )
+rownames(s3_rcol_lymph_met_r1_metadata) <- s3_rcol_lymph_met_r1_metadata$UniqueCID
+s3_rcol_lymph_met_r1_sc <- CreateSeuratObject(s3_rcol_lymph_met_r1_sc, meta.data = s3_rcol_lymph_met_r1_metadata) 
+Idents(s3_rcol_lymph_met_r1_sc) <- "Lymph"
+
+s3_rcol_lymph_met_r2_sc <- Read10X("cytospace_results/SN048_A416371_Rep2/assigned_expression/")
+s3_rcol_lymph_met_r2_loc <- read_csv("cytospace_results/SN048_A416371_Rep2/assigned_locations.csv")
+s3_rcol_lymph_met_r2_pthg <- pathology_annotation[grepl("SN048_A416371_Rep2", pathology_annotation$spot_id), ]
+s3_rcol_lymph_met_r2_metadata <- merge(s3_rcol_lymph_met_r2_loc, s3_rcol_lymph_met_r2_pthg, by = "SpotID" )
+rownames(s3_rcol_lymph_met_r2_metadata) <- s3_rcol_lymph_met_r2_metadata$UniqueCID
+s3_rcol_lymph_met_r2_sc <- CreateSeuratObject(s3_rcol_lymph_met_r2_sc, meta.data = s3_rcol_lymph_met_r2_metadata) 
+Idents(s3_rcol_lymph_met_r2_sc) <- "Lymph"
+
+s3_rcol_lymph_met_sc <- merge(s3_rcol_lymph_met_r1_sc, s3_rcol_lymph_met_r2_sc)
+
+
+# s4
+s4_scol_lymph_met_r1_sc <- Read10X("cytospace_results/SN84_A120838_Rep1/assigned_expression/")
+s4_scol_lymph_met_r1_loc <- read_csv("cytospace_results/SN84_A120838_Rep1/assigned_locations.csv")
+s4_scol_lymph_met_r1_pthg <- pathology_annotation[grepl("SN84_A120838_Rep1", pathology_annotation$spot_id), ]
+s4_scol_lymph_met_r1_metadata <- merge(s4_scol_lymph_met_r1_loc, s4_scol_lymph_met_r1_pthg, by = "SpotID" )
+rownames(s4_scol_lymph_met_r1_metadata) <- s4_scol_lymph_met_r1_metadata$UniqueCID
+s4_scol_lymph_met_r1_sc <- CreateSeuratObject(s4_scol_lymph_met_r1_sc, meta.data = s4_scol_lymph_met_r1_metadata) 
+Idents(s4_scol_lymph_met_r1_sc) <- "Lymph"
+
+s4_scol_lymph_met_r2_sc <- Read10X("cytospace_results/SN84_A120838_Rep2/assigned_expression/")
+s4_scol_lymph_met_r2_loc <- read_csv("cytospace_results/SN84_A120838_Rep2/assigned_locations.csv")
+s4_scol_lymph_met_r2_pthg <- pathology_annotation[grepl("SN84_A120838_Rep2", pathology_annotation$spot_id), ]
+s4_scol_lymph_met_r2_metadata <- merge(s4_scol_lymph_met_r2_loc, s4_scol_lymph_met_r2_pthg, by = "SpotID" )
+rownames(s4_scol_lymph_met_r2_metadata) <- s4_scol_lymph_met_r2_metadata$UniqueCID
+s4_scol_lymph_met_r2_sc <- CreateSeuratObject(s4_scol_lymph_met_r2_sc, meta.data = s4_scol_lymph_met_r2_metadata) 
+Idents(s4_scol_lymph_met_r2_sc) <- "Lymph"
+
+s4_scol_lymph_met_sc <- merge(s4_scol_lymph_met_r1_sc, s4_scol_lymph_met_r2_sc)
+
+
+# merge - right colon, both met vs only lymph
+combined_both <- merge(s1_cec_both_met_r1_sc, s2_rcol_both_met_sc)
+combined_both <- merge(combined_both, s5_rec_both_met_sc)
+
+combined_lymph <- merge(s4_scol_lymph_met_sc, s3_rcol_lymph_met_sc)
+
+combined_all <- merge(combined_both, combined_lymph)
+```
+
+```{r}
+all_tumor_markers <- list()
+all_stroma_markers <- list()
+
+cell_types <- c("Epithelial cells", "Stromal cells",   "Myeloids" ,  "T cells" , "B cells", "Mast cells" )
+```
+
+```{r}
+
+for (ct in cell_types) {
+  crc.ct <- copy(combined_all)
+  crc.ct <- subset(crc.ct, subset = CellType == ct)
+  crc.ct <- SCTransform(crc.ct,variable.features.n=dim(crc.ct)[1],return.only.var.genes=FALSE)
+  
+  crc.ct.tumor <- subset(crc.ct, subset = region == "tumor")
+  crc.ct.tumor.stroma <- subset(crc.ct, subset = region == "tumor&stroma")
+  # crc.ct.tumor.other <- subset(crc.ct, subset = region == "other")
+  
+  crc.ct.tumor <-  M(crc.ct.tumor, assay = "SCT", verbose = TRUE)
+  crc.ct.tumor.stroma <-  PrepSCTFindMarkers(crc.ct.tumor.stroma, assay = "SCT", verbose = TRUE)
+  # crc.ct.tumor.other <-  PrepSCTFindMarkers(crc.ct.tumor.other, assay = "SCT", verbose = TRUE)
+  
+  met.markers.tumor <- FindMarkers(crc.ct.tumor, ident.1 = "Lymph", ident.2 = "Lymph/Liver", recorrect_umi = FALSE)
+  all_tumor_markers[[length(all_tumor_markers) + 1]] <- cbind(met.markers.tumor, ct)
+  met.markers.stroma <- FindMarkers(crc.ct.tumor.stroma, ident.1 = "Lymph", ident.2 = "Lymph/Liver", recorrect_umi = FALSE)
+  all_stroma_markers[[length(all_stroma_markers) + 1]] <- cbind(met.markers.stroma, ct)
+  
+  # met.markers.other <- FindMarkers(crc.ct.tumor.other, ident.1 = "Lymph", ident.2 = "Lymph/Liver", recorrect_umi = FALSE)
+  
+}
+```
+
+Save marker lists
+```{r}
+all_tumor_markers_df <- do.call(rbind, all_tumor_markers)
+all_stroma_markers_df <- do.call(rbind, all_stroma_markers)
+```
+
+Plotting significant differentially expressed genes.
+```{r}
+library(ggrepel)
+library(dplyr)
+library(stringr)
+sig_threshold <- 0.01
+fc_threshold <- 1
+
+for (ct in cell_types) {
+  
+  met.markers.tumor <- all_tumor_markers_df[all_tumor_markers_df$ct == ct,]
+  met.markers.stroma <- all_stroma_markers_df[all_stroma_markers_df$ct == ct,]
+
+  # Only select rows to label based on significance and fold change thresholds
+  label_data <- met.markers.tumor %>%
+    filter(p_val_adj < sig_threshold & abs(avg_log2FC) > fc_threshold) 
+    
+  label_data$gene <- row.names(label_data)
+  
+  
+  ggplot(met.markers.tumor, aes(x = avg_log2FC, y = -log10(p_val_adj))) +
+    geom_point(aes(color = avg_log2FC), alpha = 0.5) +
+    scale_color_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0) +
+    labs(x = "Average Log2 Fold Change", y = "-Log10 Adjusted P-value", 
+         title = paste("Metastasis associated", ct,  "markers\n from primary tumor regions")) +
+      theme_minimal(base_size = 16) +  # Increase the base text size
+    geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+    geom_hline(yintercept = -log10(sig_threshold), linetype = "dashed", color = "black") +
+    geom_text_repel(data = label_data, aes(label = gene), size = 5, max.overlaps = Inf) +  # Increase the text size for labels
+    theme(
+        plot.title = element_text(size = 18),  # Increase the title text size
+        axis.title = element_text(size = 16),  # Increase the axis titles text size
+        axis.text = element_text(size = 16)  # Increase the axis text size
+    )
+
+  
+  # ggsave(paste0("deg_tumor_", ct, ".png"), bg = 'white')
+
+  # Only select rows to label based on significance and fold change thresholds
+  label_data <- met.markers.stroma %>%
+    filter(p_val_adj < sig_threshold & abs(avg_log2FC) > fc_threshold)
+  label_data$gene <- row.names(label_data)
+  label_data <- label_data %>%
+    filter(str_detect(gene, "TFF")) 
+  
+ ggplot(met.markers.stroma, aes(x = avg_log2FC, y = -log10(p_val_adj))) +
+    geom_point(aes(color = avg_log2FC)) +
+    scale_color_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0) +
+    labs(x = "Average Log2 Fold Change", y = "-Log10 Adjusted P-value", 
+         title = paste("Metastasis associated", ct, "markers\n from primary tumor-stroma regions")) +
+    theme_minimal(base_size = 16) +  # Increase the base text size
+    geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+    geom_hline(yintercept = -log10(sig_threshold), linetype = "dashed", color = "black") +
+    geom_text_repel(data = label_data, aes(label = gene), size = 5, max.overlaps = Inf) +  # Increase the text size for labels
+    theme(
+        plot.title = element_text(size = 18),  # Increase the title text size
+        axis.title = element_text(size = 16),  # Increase the axis titles text size
+        axis.text = element_text(size = 16)  # Increase the axis text size
+    )
+
+  # ggsave(paste0("deg_stroma_", ct, ".png"), bg = 'white')
+
+}
+
+```
