@@ -16,7 +16,7 @@ Spatial neighborhoods within primary CRC tumors were identified using matrix fac
 ## CytoSPACE Implementation
 CytoSPACE is an optimization method for mapping individual cells from a single-cell RNA sequencing atlas to spatial expression profiles. It resolves the task of assigning single cells/spots as a convex optimization challenge using the Jonker-Volgenant shortest augmenting path algorithm. [2]. 
 
-We ran CytoSPACE with default parameters following guidelines specified in the tool's GitHub page (https://github.com/digitalcytometry/cytospace/blob/main/README.md). The output included estimated cell type fractions for each spot, along with spatially detailed single-cell RNA sequencing data.
+We ran CytoSPACE with default parameters following guidelines specified in the tool's GitHub page (https://github.com/digitalcytometry/cytospace/blob/main/README.md). The output included estimated cell type fractions for each spot, along with spatially detailed single-cell RNA sequencing data. The files run_cytospace_prep.sh and run_cytospace.sh in the CytoSPACE directory include the code for preparing data to input to the tool and running the tool.
 
 The cell type fractions output was merged with sample annotations. We utilized the dplyr and ggplot2 packages to aggregate and plot sample and metastatic group level cell type fractions. The single-cell RNA seq data was processed using the Seurat R package.
 
@@ -24,7 +24,9 @@ Technical replicates were merged for each sample into one Seurat object, and pat
 
 The object was subsetted to each cell type, processed using SCTransform with default parameters, and prepared for differential expression analysis using the PrepSCTFindMarkers function. Differentially expressed genes were identified for each pathological region separately, using the FindMarkers function without recorrecting for UMI counts.
 
-The found markers were plotted to identify significantly differentially expressed genes using a significance threshold of 0.01 and a logFC threshold of 1.
+The found markers were plotted to identify significantly differentially expressed genes using a significance threshold of 0.01 and a logFC threshold of 1. 
+
+All the downstream analysis for CytoSPACE results was performed in R, using dplyr, Seurat and ggplot2 libraries, and the code is included as an R markdown file, seurat_post_proc.Rmd, under the CytoSPACE folder.
 
 ## References
 [1] Kleshchevnikov, V., Shmatko, A., Dann, E. et al. Cell2location maps fine-grained cell types in spatial transcriptomics. Nat Biotechnol 40, 661–671 (2022). https://doi.org/10.1038/s41587-021-01139-4
