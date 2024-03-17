@@ -28,4 +28,5 @@ The found markers were plotted to identify significantly differentially expresse
 
 ## References
 [1] Kleshchevnikov, V., Shmatko, A., Dann, E. et al. Cell2location maps fine-grained cell types in spatial transcriptomics. Nat Biotechnol 40, 661–671 (2022). https://doi.org/10.1038/s41587-021-01139-4
+
 [2] Vahid, M.R., Brown, E.L., Steen, C.B. et al. High-resolution alignment of single-cell and spatial transcriptomes with CytoSPACE. Nat Biotechnol 41, 1543–1548 (2023). https://doi.org/10.1038/s41587-023-01697-9
