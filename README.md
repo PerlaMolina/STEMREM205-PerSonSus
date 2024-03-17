@@ -1,10 +1,12 @@
+This repository includes method description and code associated with the following project:
+
 # Exploring variations across colorectal cancer metastasis patterns in a spatial context
 Susie Avagyan, Perla Molina, and Sonia Bustos Barocio
 
 BIODS 205/STEMREM 205 at Stanford University
 
 ## Abstract
-Colorectal cancer (CRC) poses a global health challenge, ranking among the most diagnosed cancers with high mortality rates. Understanding its genetic complexity and metastatic potential is crucial for prognosis and treatment. Leveraging single-cell and spatial transcriptomics data, our study explores spatial neighborhoods in primary CRC tumors. Integrated analysis reveals differential cellular composition and transcriptional profiles, shedding light on spatial determinants of CRC metastasis, vital for improving patient outcomes.
+Colorectal cancer (CRC) poses a global health challenge, ranking among the most diagnosed cancers with high mortality rates. Understanding its genetic complexity and metastatic potential is crucial for prognosis and treatment. Leveraging single-cell and spatial transcriptomics data, our study explores spatial neighborhoods in primary CRC tumors and tries to find associations with metastatic fate. Integrated analysis reveals differential cellular composition and transcriptional profiles in the primary tumor of patients with different metastasis, shedding light on spatial determinants of CRC metastasis, which is vital for improving patient outcomes.
 
 ## Cell2Location Implementation
 Cell2Location is a Bayesian model designed to delineate fine-grained cell types by leveraging single-cell RNA-seq and spatial transcriptomics data [1]. Implemented using Python in Google Colab, it offers a powerful tool for understanding cellular composition in complex tissues. We followed the tutorials from https://github.com/BayraktarLab/cell2location?tab=readme-ov-file and https://cell2location.readthedocs.io/en/latest/notebooks/cell2location_tutorial.html.
