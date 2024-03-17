@@ -8,10 +8,10 @@ Colorectal cancer (CRC) poses a global health challenge, ranking among the most 
 Cell2Location is a Bayesian model designed to delineate fine-grained cell types by leveraging single-cell RNA-seq and spatial transcriptomics data [1]. Implemented using Python in Google Colab, it offers a powerful tool for understanding cellular composition in complex tissues. We followed the tutorials from https://github.com/BayraktarLab/cell2location?tab=readme-ov-file and https://cell2location.readthedocs.io/en/latest/notebooks/cell2location_tutorial.html.
 
 ### Estimation of Reference Cell Type Signatures
-Reference cell type signatures were generated from single-cell RNA-seq data using Cell2Location's model functions. A regression model was created and trained for 250 epochs, filtering genes and performing quality control before training.
+Reference cell type signatures were generated from single-cell RNA-seq data using Cell2Location's model functions. A regression model was created and trained for 250 epochs, filtering genes and performing quality control before training. This is in the file under the Cell2Location folder: Pt.1 Belgian_Cohort_ExpressionSigs.ipynb.
 
 ### Deconvolution Analysis
-Cell2Location performs deconvolution based on generated gene expression cell type signatures. This process involved processing CRC 10x Visium samples, identifying shared genes, and subsetting spatial transcriptomics data and reference signatures. The model was trained with parameters controlling tissue-dependent cell abundance and normalization of RNA detection variation.
+Cell2Location performs deconvolution based on generated gene expression cell type signatures. This process involved processing CRC 10x Visium samples, identifying shared genes, and subsetting spatial transcriptomics data and reference signatures. The model was trained with parameters controlling tissue-dependent cell abundance and normalization of RNA detection variation. This is in the file under the Cell2Location folder: Pt.2 Belgian_Cohort_Decovolution.ipynb.
 
 ### Identification of Spatial Neighborhoods
 Spatial neighborhoods within primary CRC tumors were identified using matrix factorization (NMF) with the 'CoLocatedGroupsSklearnNMF' model. Employing 5 and 6 factors, different cellular compartments were captured. The analysis was conducted separately for tumor regions in lymph node and liver metastasized samples, as well as tumor-stroma interfaces in both metastases.
